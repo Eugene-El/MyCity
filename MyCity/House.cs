@@ -11,14 +11,21 @@ namespace MyCity
     {
         public Coordinates Coords { get; }
         public int Height { get; }
-        public int Width { get; }
+        public int Width { get; } 
 
-        public uint OwnerID { get; set; }
-        //public uint[] livers? 
+        public List<int> LodgersList { get; }
+
+        public bool IsEmpty
+        {
+            get
+            {
+                return LodgersList.Count == 0;
+            }
+        }
 
         public House(Coordinates coords, int width, int height)
         {
-            
+            LodgersList = new List<int>();   
             Coords = coords;
             Height = height;
             Width = width;

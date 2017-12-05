@@ -24,6 +24,28 @@ namespace MyCity
         public DateTime Birthday { get; }
         public Coordinates Coords { get; set; }
 
+        public bool HaveHouse
+        {
+            get
+            {
+                //return City.GetInstance().Houses.All(h => h.LodgersList.Contains(ID));
+
+                bool result = false;
+                for (int i = 0; i < City.GetInstance().Houses.Count; i++)
+                    if (City.GetInstance().Houses[i].LodgersList.Contains(ID))
+                        result = true;
+                return result;
+            }
+        }
+
+        public Coordinates HouseCoords
+        {
+            get
+            {
+                return City.GetInstance().Houses.Find(h => h.LodgersList.Contains(ID)).Coords;
+            }
+        }
+
         // Targeting
         private Coordinates target;
         public Coordinates Target {
@@ -127,6 +149,29 @@ namespace MyCity
             }
         }
 
+        void GoHome()
+        {
+            if (HaveHouse)
+            {
+                // TODO say : go home!
+                Target = HouseCoords;
+                Travel();
+            }
+            else
+            {
+                
+            }
+        }
+
+        void GetHouse()
+        {
+
+        }
+
+        void BuildHouse()
+        {
+
+        }
 
         public void BornPerson()
         {

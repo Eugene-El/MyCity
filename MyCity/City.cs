@@ -55,7 +55,7 @@ namespace MyCity
             for (int i = 0; i < peopleCount; i++)
                 AddPerson(new Person(Rand), Reason.PersonArived);
 
-            for (int i = 0; i < 300; i++)
+            for (int i = 0; i < 4; i++)
                 Houses.Add(House.GenerateHouse(Rand));
             Draw();
 
