@@ -35,6 +35,9 @@ namespace MyCity
 
         public House(Random rand) : this(new Coordinates(rand), rand.Next(2, 6), rand.Next(2, 6)) { }
 
+
+        // // // //
+
         public static House GenerateHouse(Random rand)
         {
             House house;
@@ -47,15 +50,21 @@ namespace MyCity
                     isIncorrect = true;
 
                 if (!isIncorrect)
-                    foreach (House h in City.GetInstance().Houses)
-                    {
-                        if (h.CheckForIntersection(house))
-                            isIncorrect = true;
-                    }
+                    isIncorrect = !CanCreateInCity(house);
                 
             } while (isIncorrect);
 
             return house;
+        }
+
+        public static bool CanCreateInCity(House house)
+        {
+            foreach (House h in City.GetInstance().Houses)
+            {
+                if (h.CheckForIntersection(house))
+                    return false;
+            }
+            return true;
         }
 
         public bool CheckForIntersection(House house)

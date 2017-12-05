@@ -75,6 +75,7 @@ namespace MyCity
             People.Add(person);
             person.PersonBorn += AddPerson;
             person.PersonInfo += Log;
+            person.PersonBildHouse += AddHouse;
             person.PersonDie += DeletePerson;
             Console.ForegroundColor = reason == Reason.PersonBorned ? ConsoleColor.Yellow : ConsoleColor.DarkYellow;
             Log(person + (reason == Reason.PersonBorned ? " was born!" : " arrived to the city!"));
@@ -85,6 +86,13 @@ namespace MyCity
             People.Remove(person);
             Console.ForegroundColor = ConsoleColor.Red;
             Log(person + " died!");
+        }
+
+        public void AddHouse(House house)
+        {
+            Houses.Add(house);
+            Console.ForegroundColor = ConsoleColor.Green;
+            Log("House bilded at " + house.Coords + " !");
         }
 
         public void Log(string info)

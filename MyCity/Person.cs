@@ -10,6 +10,7 @@ namespace MyCity
     delegate void PersonBornDelegate(Person person, Reason reason);
     delegate void PersonInfoDelegate(string str);
     delegate void PersonDieDelegate(Person person);
+    delegate void PersonBildHouseDelegate(House house);
 
     class Person
     {
@@ -47,17 +48,14 @@ namespace MyCity
         }
 
         // Targeting
-        private Coordinates target;
-        public Coordinates Target {
-            get { return target; }
-            set { target = value; HaveTarget = true; }
-        }
-        public bool HaveTarget { get; private set; }
+        public Coordinates Target { get; private set; }
+        //public bool GoToBild { get; private set; }
         //
 
         public event PersonBornDelegate PersonBorn;
         public event PersonInfoDelegate PersonInfo;
         public event PersonDieDelegate PersonDie;
+        public event PersonBildHouseDelegate PersonBildHouse;
 
 
         public Person(string name, string surname, Random rand)
@@ -99,6 +97,7 @@ namespace MyCity
             {
                 Console.ForegroundColor = ConsoleColor.Blue;
                 Target = new Coordinates(Rand);
+
                 GiveInfo(this + " go to " + Target);
                 Travel();
             }
@@ -121,8 +120,7 @@ namespace MyCity
             {
                 Console.ForegroundColor = ConsoleColor.Blue;
                 GiveInfo(this + " get target " + Coords);
-                HaveTarget = false;
-                Live();
+                
             }
             else
             {
@@ -165,12 +163,26 @@ namespace MyCity
 
         void GetHouse()
         {
+            if (HaveHouse)
+            {
+                // TODO delete from existing house
 
+            }
+            else
+            {
+                // TODO get free house if is or bild
+            }
         }
 
         void BuildHouse()
         {
-
+            House houseToBild = House.GenerateHouse(Rand);
+            Target = houseToBild.Coords;
+            Travel();
+            if (House.CanCreateInCity(houseToBild))
+                PersonBildHouse?.Invoke(houseToBild);
+            else
+                BuildHouse();
         }
 
         public void BornPerson()
