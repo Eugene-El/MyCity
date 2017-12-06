@@ -83,15 +83,14 @@ namespace MyCity
                 coords.Y >= Coords.Y - 1 && coords.Y <= Coords.Y + Height + 1);
         }
 
-        public void Draw(Bitmap b)
+        public void Draw()
         {
             for (int j = 0; j < Height; j++)
                 for (int i = 0; i < Width; i++)
                     if (j == 0 || j  == Height-1 || i == 0 || i == Width - 1)
-                        b.SetPixel(Coords.X+i, Coords.Y+j, Color.Red);
+                        City.GetInstance().CityMap.SetPixel(Coords.X+i, Coords.Y+j, Color.Red);
                     else
-                        b.SetPixel(Coords.X + i, Coords.Y + j, Color.Yellow);
-
+                        City.GetInstance().CityMap.SetPixel(Coords.X + i, Coords.Y + j, Color.Yellow);
         }
     }
 }

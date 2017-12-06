@@ -44,6 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="City.cs" />
+    <Compile Include="CityMap.cs" />
     <Compile Include="Coordinates.cs" />
     <Compile Include="House.cs" />
     <Compile Include="Person.cs" />

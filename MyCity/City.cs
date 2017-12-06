@@ -15,7 +15,7 @@ namespace MyCity
         public List<Person> People { get; set; }
         public List<House> Houses { get; set; }
         private Random Rand;
-
+        public CityMap CityMap { get; private set; }
 
         // Singleton
         private static City instance;
@@ -44,14 +44,14 @@ namespace MyCity
             Rand = new Random();
 
 
-
-
             Thread CityLife = new Thread(() => CityGeneration(peopleCount));
             CityLife.Start();
         }
 
         private void CityGeneration(int peopleCount)
         {
+            CityMap = new CityMap();
+
             for (int i = 0; i < peopleCount; i++)
                 AddPerson(new Person(Rand), Reason.PersonArived);
 
@@ -64,9 +64,11 @@ namespace MyCity
 
         void Live()
         {
-            Thread.Sleep(1000);
-            Console.ForegroundColor = ConsoleColor.Green;
-            Log("Tick");
+            Thread.Sleep(10000);
+
+            // TODO write city live code 
+            Draw();
+
             Live();
         }
 
@@ -75,41 +77,35 @@ namespace MyCity
             People.Add(person);
             person.PersonBorn += AddPerson;
             person.PersonInfo += Log;
-            person.PersonBildHouse += AddHouse;
+            person.PersonBuildHouse += AddHouse;
             person.PersonDie += DeletePerson;
-            Console.ForegroundColor = reason == Reason.PersonBorned ? ConsoleColor.Yellow : ConsoleColor.DarkYellow;
-            Log(person + (reason == Reason.PersonBorned ? " was born!" : " arrived to the city!"));
+            Log(person + (reason == Reason.PersonBorned ? " was born!" : " arrived to the city!"), 
+                reason == Reason.PersonBorned ? ConsoleColor.Yellow : ConsoleColor.DarkYellow);
         }
 
         public void DeletePerson(Person person)
         {
             People.Remove(person);
-            Console.ForegroundColor = ConsoleColor.Red;
-            Log(person + " died!");
+            Log(person + " died!", ConsoleColor.Red);
         }
 
         public void AddHouse(House house)
         {
             Houses.Add(house);
-            Console.ForegroundColor = ConsoleColor.Green;
-            Log("House bilded at " + house.Coords + " !");
+            Log("House bilded at " + house.Coords + " !", ConsoleColor.Green);
         }
 
-        public void Log(string info)
+        public void Log(string info, ConsoleColor cc)
         {
+            Console.ForegroundColor = cc;
             Console.WriteLine("[" + DateTime.Now.ToLongTimeString() + "] " + info);
         }
 
         public void Draw()
         {
-            Bitmap b = new Bitmap(Width, Height);
-            for (int j = 0; j < Height; j++)
-                for (int i = 0; i < Width; i++)
-                    b.SetPixel(i, j, Color.Lime);
-            foreach (House h in Houses)
-                h.Draw(b);
-            b.Save("City.png");
-            Log("IMAGE");
+            CityMap.Draw();
+            CityMap.Save();
+            Log("IMAGE", ConsoleColor.Cyan);
         }
 
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -8,9 +9,9 @@ using System.Threading.Tasks;
 namespace MyCity
 {
     delegate void PersonBornDelegate(Person person, Reason reason);
-    delegate void PersonInfoDelegate(string str);
+    delegate void PersonInfoDelegate(string str, ConsoleColor cc);
     delegate void PersonDieDelegate(Person person);
-    delegate void PersonBildHouseDelegate(House house);
+    delegate void PersonBuildHouseDelegate(House house);
 
     class Person
     {
@@ -49,13 +50,13 @@ namespace MyCity
 
         // Targeting
         public Coordinates Target { get; private set; }
-        //public bool GoToBild { get; private set; }
+
         //
 
         public event PersonBornDelegate PersonBorn;
         public event PersonInfoDelegate PersonInfo;
         public event PersonDieDelegate PersonDie;
-        public event PersonBildHouseDelegate PersonBildHouse;
+        public event PersonBuildHouseDelegate PersonBuildHouse;
 
 
         public Person(string name, string surname, Random rand)
@@ -89,22 +90,29 @@ namespace MyCity
         {
             Thread.Sleep(Rand.Next(10000, 60000)); // From 10 to 60 seconds
             int choose = Rand.Next(100);
-            if (choose < 30)
+            if (choose < 20)
             {
                 BornPerson();
             }
+            else if (choose < 40)
+            {
+                BuildHouse();
+            }
             else if (choose < 60)
             {
-                Console.ForegroundColor = ConsoleColor.Blue;
                 Target = new Coordinates(Rand);
 
-                GiveInfo(this + " go to " + Target);
+                GiveInfo(this + " go to " + Target, ConsoleColor.Blue);
                 Travel();
             }
             else if (choose > 95)
             {
                 Die();
                 return;
+            }
+            else
+            {
+                GoHome();
             }
             
             Live();
@@ -118,8 +126,8 @@ namespace MyCity
             //GiveInfo(this + " now at" + Coords);
             if (Coords.Equals(Target))
             {
-                Console.ForegroundColor = ConsoleColor.Blue;
-                GiveInfo(this + " get target " + Coords);
+                
+                GiveInfo(this + " get target " + Coords, ConsoleColor.Blue);
                 
             }
             else
@@ -151,27 +159,31 @@ namespace MyCity
         {
             if (HaveHouse)
             {
-                // TODO say : go home!
+                GiveInfo(this + " go home!", ConsoleColor.DarkMagenta);
                 Target = HouseCoords;
                 Travel();
             }
             else
             {
-                
+                GetHouse();
             }
         }
 
         void GetHouse()
         {
             if (HaveHouse)
-            {
-                // TODO delete from existing house
+                UnregistrateFromCurrenHouse();
 
-            }
-            else
-            {
-                // TODO get free house if is or bild
-            }
+            foreach (House h in City.GetInstance().Houses)
+                if (h.IsEmpty)
+                {
+                    h.LodgersList.Add(ID);
+                    GiveInfo(this + " now have house at " + h.Coords, ConsoleColor.DarkGreen);
+                    return;
+                }
+
+            BuildHouse();
+            GetHouse();
         }
 
         void BuildHouse()
@@ -180,9 +192,19 @@ namespace MyCity
             Target = houseToBild.Coords;
             Travel();
             if (House.CanCreateInCity(houseToBild))
-                PersonBildHouse?.Invoke(houseToBild);
+                PersonBuildHouse?.Invoke(houseToBild);
             else
                 BuildHouse();
+        }
+
+        void UnregistrateFromCurrenHouse()
+        {
+            if (HaveHouse)
+            {
+                // Go throw all for security from bugs
+                foreach (House h in City.GetInstance().Houses)
+                    h.LodgersList.RemoveAll(i => i == ID);
+            }
         }
 
         public void BornPerson()
@@ -190,13 +212,14 @@ namespace MyCity
             PersonBorn?.Invoke(new Person(ChooseName(), Surname, Rand), Reason.PersonBorned);
         }
 
-        public void GiveInfo(string str)
+        public void GiveInfo(string str, ConsoleColor cc)
         {
-            PersonInfo?.Invoke(str);
+            PersonInfo?.Invoke(str, cc);
         }
 
         public void Die()
         {
+            UnregistrateFromCurrenHouse();
             PersonDie?.Invoke(this);
         }
 
@@ -208,6 +231,11 @@ namespace MyCity
         public override string ToString()
         {
             return FullName + " (ID: " + ID + ")";
+        }
+
+        public void Draw()
+        {
+            City.GetInstance().CityMap.SetPixel(Coords.X, Coords.Y, Color.Blue);
         }
     }
 }
