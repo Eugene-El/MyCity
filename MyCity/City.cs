@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace MyCity
 {
@@ -47,7 +48,7 @@ namespace MyCity
             Thread CityLife = new Thread(() => CityGeneration(peopleCount));
             CityLife.Start();
         }
-
+        
         private void CityGeneration(int peopleCount)
         {
             CityMap = new CityMap();
@@ -59,6 +60,7 @@ namespace MyCity
                 Houses.Add(House.GenerateHouse(Rand));
             Draw();
 
+            
             Live();
         }
 
@@ -67,7 +69,7 @@ namespace MyCity
             Thread.Sleep(10000);
 
             // TODO write city live code 
-            Draw();
+            //Draw();
 
             Live();
         }
