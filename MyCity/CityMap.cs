@@ -12,8 +12,7 @@ namespace MyCity
         const int SCALE = 5;
 
         private Bitmap Background;
-
-        public Bitmap Map { get; private set; }
+        private Bitmap Map;
 
         int Width { get { return City.GetInstance().Width; } }
         int Height { get { return City.GetInstance().Height; } }
