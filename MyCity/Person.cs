@@ -50,7 +50,6 @@ namespace MyCity
 
         // Targeting
         public Coordinates Target { get; private set; }
-
         //
 
         public event PersonBornDelegate PersonBorn;
@@ -58,6 +57,8 @@ namespace MyCity
         public event PersonDieDelegate PersonDie;
         public event PersonBuildHouseDelegate PersonBuildHouse;
 
+        // Live thread
+        private Thread LiveThread;
 
         public Person(string name, string surname, Random rand)
         {
@@ -68,7 +69,7 @@ namespace MyCity
             Birthday = DateTime.Now;
             Coords = new Coordinates();
 
-            Thread LiveThread = new Thread(Live);
+            LiveThread = new Thread(Live);
             LiveThread.Start();
         }
 
@@ -79,9 +80,27 @@ namespace MyCity
             Birthday = DateTime.Now;
             Name = ChooseName();
             Surname = surnames[Rand.Next(surnames.Length)];
-            Coords = new Coordinates();
+            switch (Rand.Next(4))
+            {
+                case 0:
+                    Coords = new Coordinates(Rand.Next(City.GetInstance().Width), 0);
+                    break;
 
-            Thread LiveThread = new Thread(Live);
+                case 1:
+                    Coords = new Coordinates(Rand.Next(City.GetInstance().Width), City.GetInstance().Height-1);
+                    break;
+
+                case 2:
+                    Coords = new Coordinates(0, Rand.Next(City.GetInstance().Height));
+                    break;
+
+                case 3:
+                    Coords = new Coordinates(City.GetInstance().Width-1, Rand.Next(City.GetInstance().Height));
+                    break;
+            }
+             
+
+            LiveThread = new Thread(Live);
             LiveThread.Start();
 
         }
@@ -94,11 +113,11 @@ namespace MyCity
             {
                 BornPerson();
             }
-            else if (choose < 40)
+            else if (choose < 40 && (City.GetInstance().WeatherNow != Weather.Rainy))
             {
                 BuildHouse();
             }
-            else if (choose < 60)
+            else if (choose < 60 && (City.GetInstance().WeatherNow != Weather.Rainy))
             {
                 Target = new Coordinates(Rand);
 
@@ -112,7 +131,8 @@ namespace MyCity
             }
             else
             {
-                GoHome();
+                if (City.GetInstance().WeatherNow != Weather.Rainy)
+                    GoHome();
             }
             
             Live();
@@ -120,10 +140,9 @@ namespace MyCity
 
         void Travel()
         {
-            Thread.Sleep(1500); // 1.5 seconds (standart speed for all)
+            Thread.Sleep(500); // One speed for all
 
-            Console.ForegroundColor = ConsoleColor.Magenta;
-            //GiveInfo(this + " now at" + Coords);
+            
             if (Coords.Equals(Target))
             {
                 
@@ -155,8 +174,18 @@ namespace MyCity
             }
         }
 
+        public void HideFromRain()
+        {
+            GiveInfo("Rain??", ConsoleColor.Magenta);
+            //LiveThread.Suspend();
+            GoHome();
+            //LiveThread.Resume();
+            //GiveInfo("Gain controll", ConsoleColor.Magenta);
+        }
+
         void GoHome()
         {
+            //GiveInfo("Rain???", ConsoleColor.Magenta);
             if (HaveHouse)
             {
                 GiveInfo(this + " go home!", ConsoleColor.DarkMagenta);
@@ -209,7 +238,9 @@ namespace MyCity
 
         public void BornPerson()
         {
-            PersonBorn?.Invoke(new Person(ChooseName(), Surname, Rand), Reason.PersonBorned);
+            Person p = new Person(ChooseName(), Surname, Rand);
+            p.Coords = Coords;
+            PersonBorn?.Invoke(p, Reason.PersonBorned);
         }
 
         public void GiveInfo(string str, ConsoleColor cc)

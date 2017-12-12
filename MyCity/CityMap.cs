@@ -22,12 +22,15 @@ namespace MyCity
 
         public void Draw()
         {
-            ClearMap();
-            foreach (House h in City.GetInstance().Houses)
-                h.Draw();
-            foreach (Person p in City.GetInstance().People)
-                p.Draw();
-            
+            try
+            {
+                ClearMap();
+                foreach (House h in City.GetInstance().Houses)
+                    h.Draw();
+                foreach (Person p in City.GetInstance().People)
+                    p.Draw();
+            }
+            catch (Exception) { }
         }
 
         public CityMap()

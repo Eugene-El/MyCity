@@ -15,6 +15,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace MyCity
 {
@@ -34,10 +35,21 @@ namespace MyCity
 
         void Update()
         {
-            Thread.Sleep(1000);
+            Thread.Sleep(500);
 
-            Bitmap b = (Bitmap)City.GetInstance().CityMap.Map.Clone();
-            ImgMap.Source = BitmapToImageSource(b);
+            try
+            {
+                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+                {
+
+                    if (City.GetInstance().CityMap != null)
+                    {
+                        City.GetInstance().CityMap.Draw();
+                        ImgMap.Source = BitmapToImageSource((Bitmap)City.GetInstance().CityMap.Map.Clone());
+                    }
+                }));
+            }
+            catch (Exception) { }
 
             Update();
         }

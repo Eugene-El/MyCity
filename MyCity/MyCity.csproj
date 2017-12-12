@@ -52,6 +52,7 @@
     <Compile Include="City.cs" />
     <Compile Include="CityMap.cs" />
     <Compile Include="Coordinates.cs" />
+    <Compile Include="Enums\Weather.cs" />
     <Compile Include="House.cs" />
     <Compile Include="MapWindow.xaml.cs">
       <DependentUpon>MapWindow.xaml</DependentUpon>
@@ -59,17 +60,13 @@
     <Compile Include="Person.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Reason.cs" />
+    <Compile Include="Enums\Reason.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="App.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="MapWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

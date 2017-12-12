@@ -9,14 +9,19 @@ using System.Windows;
 
 namespace MyCity
 {
+    public delegate void RainDelegate();
+
     class City
     {
         public int Width { get; }
         public int Height { get; }
-        public List<Person> People { get; set; }
-        public List<House> Houses { get; set; }
+        public List<Person> People { get; }
+        public List<House> Houses { get; }
         private Random Rand;
         public CityMap CityMap { get; private set; }
+        public Weather WeatherNow { get; private set; }
+
+        public event RainDelegate RainEvent;
 
         // Singleton
         private static City instance;
@@ -30,6 +35,9 @@ namespace MyCity
 
         public static City GetInstance()
         {
+            if (instance != null)
+                return instance;
+
             Random r = new Random();
             return GetInstance(r.Next(1000), r.Next(1000), r.Next(19) + 1);
         }
@@ -44,7 +52,7 @@ namespace MyCity
             Houses = new List<House>();
             Rand = new Random();
 
-
+            WeatherNow = Weather.Sunny;
             Thread CityLife = new Thread(() => CityGeneration(peopleCount));
             CityLife.Start();
         }
@@ -58,7 +66,7 @@ namespace MyCity
 
             for (int i = 0; i < 4; i++)
                 Houses.Add(House.GenerateHouse(Rand));
-            Draw();
+            
 
             
             Live();
@@ -66,17 +74,39 @@ namespace MyCity
 
         void Live()
         {
-            Thread.Sleep(10000);
+            Thread.Sleep(Rand.Next(10000, 60000)); // From 10 to 60 seconds
 
-            // TODO write city live code 
-            //Draw();
+            if (Rand.Next(1, 3) == 1)
+                StartRain();
+            else
+                MakeSunny();
 
             Live();
+        }
+
+        void StartRain()
+        {
+            if (WeatherNow != Weather.Rainy)
+            {
+                WeatherNow = Weather.Rainy;
+                Log("Weather now: Rainy", ConsoleColor.DarkCyan);
+                RainEvent?.Invoke();
+            }
+        }
+
+        void MakeSunny()
+        {
+            if (WeatherNow != Weather.Sunny)
+            {
+                WeatherNow = Weather.Sunny;
+                Log("Weather now: Sunny", ConsoleColor.DarkCyan);
+            }
         }
 
         public void AddPerson(Person person, Reason reason)
         {
             People.Add(person);
+            RainEvent += person.HideFromRain;
             person.PersonBorn += AddPerson;
             person.PersonInfo += Log;
             person.PersonBuildHouse += AddHouse;

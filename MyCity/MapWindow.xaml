@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyCity"
         mc:Ignorable="d" 
-        Title="Map" Height="300" Width="300" HorizontalContentAlignment="Right">
+        Title="Map" Height="600" Width="600" HorizontalContentAlignment="Right">
 
     <Grid>
-        <Image x:Name="ImgMap" HorizontalAlignment="Left" Height="269" VerticalAlignment="Top" Width="292"/>
+        <Image x:Name="ImgMap" HorizontalAlignment="Left"  VerticalAlignment="Top"  Stretch="Fill" Margin="10"/>
     </Grid>
 </Window>
