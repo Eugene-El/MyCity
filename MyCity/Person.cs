@@ -50,6 +50,7 @@ namespace MyCity
 
         // Targeting
         public Coordinates Target { get; private set; }
+        private bool GoToHome;
         //
 
         public event PersonBornDelegate PersonBorn;
@@ -68,6 +69,8 @@ namespace MyCity
             Rand = rand;
             Birthday = DateTime.Now;
             Coords = new Coordinates();
+
+            GoToHome = false;
 
             LiveThread = new Thread(Live);
             LiveThread.Start();
@@ -98,7 +101,8 @@ namespace MyCity
                     Coords = new Coordinates(City.GetInstance().Width-1, Rand.Next(City.GetInstance().Height));
                     break;
             }
-             
+
+            GoToHome = false;
 
             LiveThread = new Thread(Live);
             LiveThread.Start();
@@ -107,17 +111,25 @@ namespace MyCity
 
         void Live()
         {
+            if (GoToHome)
+            {
+                GoHome();
+                GoToHome = false;
+            }
+
             Thread.Sleep(Rand.Next(10000, 60000)); // From 10 to 60 seconds
+            
+
             int choose = Rand.Next(100);
             if (choose < 20)
             {
                 BornPerson();
             }
-            else if (choose < 40 && (City.GetInstance().WeatherNow != Weather.Rainy))
+            else if (choose < 40)
             {
                 BuildHouse();
             }
-            else if (choose < 60 && (City.GetInstance().WeatherNow != Weather.Rainy))
+            else if (choose < 60)
             {
                 Target = new Coordinates(Rand);
 
@@ -131,8 +143,7 @@ namespace MyCity
             }
             else
             {
-                if (City.GetInstance().WeatherNow != Weather.Rainy)
-                    GoHome();
+                GoHome();
             }
             
             Live();
@@ -176,7 +187,8 @@ namespace MyCity
 
         public void HideFromRain()
         {
-            GiveInfo("Rain??", ConsoleColor.Magenta);
+            GiveInfo(this + " open umbrella", ConsoleColor.Magenta);
+            //GoToHome = true;
             //LiveThread.Suspend();
             GoHome();
             //LiveThread.Resume();
@@ -185,7 +197,6 @@ namespace MyCity
 
         void GoHome()
         {
-            //GiveInfo("Rain???", ConsoleColor.Magenta);
             if (HaveHouse)
             {
                 GiveInfo(this + " go home!", ConsoleColor.DarkMagenta);
@@ -195,6 +206,7 @@ namespace MyCity
             else
             {
                 GetHouse();
+                GoHome();
             }
         }
 
@@ -251,6 +263,7 @@ namespace MyCity
         public void Die()
         {
             UnregistrateFromCurrenHouse();
+            City.GetInstance().RainEvent -= HideFromRain;
             PersonDie?.Invoke(this);
         }
 

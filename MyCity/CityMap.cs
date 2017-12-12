@@ -36,16 +36,36 @@ namespace MyCity
         public CityMap()
         {
             Background = new Bitmap(RealWidth, RealHeight);
-            for (int j = 0; j < RealHeight; j++)
-                for (int i = 0; i < RealWidth; i++)
-                    Background.SetPixel(j, i, Color.LimeGreen);
+            MakeSunnyMap();
             ClearMap();
+        }
+
+        public void FillBackground(Color color)
+        {
+            try
+            {
+                for (int j = 0; j < RealHeight; j++)
+                    for (int i = 0; i < RealWidth; i++)
+                        Background.SetPixel(j, i, color);
+            }
+            catch (Exception) { FillBackground(color); }
         }
 
         private void ClearMap()
         {
             Map = (Bitmap)Background.Clone();
         }
+
+        public void MakeSunnyMap()
+        {
+            FillBackground(Color.LimeGreen);
+        }
+
+        public void MakeRainnyMap()
+        {
+            FillBackground(Color.ForestGreen);
+        }
+
 
         public void SetPixel(int x, int y, Color color)
         {

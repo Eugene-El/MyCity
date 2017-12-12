@@ -9,7 +9,7 @@ using System.Windows;
 
 namespace MyCity
 {
-    public delegate void RainDelegate();
+    public delegate void WeatherDelegate();
 
     class City
     {
@@ -21,7 +21,8 @@ namespace MyCity
         public CityMap CityMap { get; private set; }
         public Weather WeatherNow { get; private set; }
 
-        public event RainDelegate RainEvent;
+        public event WeatherDelegate RainEvent;
+        public event WeatherDelegate SunEvent;
 
         // Singleton
         private static City instance;
@@ -60,6 +61,9 @@ namespace MyCity
         private void CityGeneration(int peopleCount)
         {
             CityMap = new CityMap();
+
+            RainEvent += CityMap.MakeRainnyMap;
+            SunEvent += CityMap.MakeSunnyMap;
 
             for (int i = 0; i < peopleCount; i++)
                 AddPerson(new Person(Rand), Reason.PersonArived);
@@ -100,6 +104,7 @@ namespace MyCity
             {
                 WeatherNow = Weather.Sunny;
                 Log("Weather now: Sunny", ConsoleColor.DarkCyan);
+                SunEvent?.Invoke();
             }
         }
 
@@ -119,6 +124,7 @@ namespace MyCity
         {
             People.Remove(person);
             Log(person + " died!", ConsoleColor.Red);
+            person = null;
         }
 
         public void AddHouse(House house)
