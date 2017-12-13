@@ -137,6 +137,7 @@ namespace MyCity
         {
             Console.ForegroundColor = cc;
             Console.WriteLine("[" + DateTime.Now.ToLongTimeString() + "] " + info);
+            
         }
 
         public void Draw()

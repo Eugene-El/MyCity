@@ -109,10 +109,16 @@ namespace MyCity
 
         }
 
+        ~Person()
+        {
+            
+        }
+
         void Live()
         {
             if (GoToHome)
             {
+                GiveInfo("I use GOtoHOME", ConsoleColor.DarkGray);
                 GoHome();
                 GoToHome = false;
             }
@@ -121,31 +127,33 @@ namespace MyCity
             
 
             int choose = Rand.Next(100);
-            if (choose < 20)
+            if (City.GetInstance().WeatherNow != Weather.Rainy)
             {
-                BornPerson();
-            }
-            else if (choose < 40)
-            {
-                BuildHouse();
-            }
-            else if (choose < 60)
-            {
-                Target = new Coordinates(Rand);
+                if (choose < 20)
+                {
+                    BornPerson();
+                }
+                else if (choose < 40)
+                {
+                    BuildHouse();
+                }
+                else if (choose < 60)
+                {
+                    Target = new Coordinates(Rand);
 
-                GiveInfo(this + " go to " + Target, ConsoleColor.Blue);
-                Travel();
+                    GiveInfo(this + " go to " + Target, ConsoleColor.Blue);
+                    Travel();
+                }
+                else if (choose > 95)
+                {
+                    Die();
+                    return;
+                }
+                else
+                {
+                    GoHome();
+                }
             }
-            else if (choose > 95)
-            {
-                Die();
-                return;
-            }
-            else
-            {
-                GoHome();
-            }
-            
             Live();
         }
 
@@ -188,11 +196,21 @@ namespace MyCity
         public void HideFromRain()
         {
             GiveInfo(this + " open umbrella", ConsoleColor.Magenta);
-            //GoToHome = true;
+            //LiveThread.Abort();
+            //LiveThread = new Thread(hideAndLive);
+            //LiveThread.Start();
+            //
+            GoToHome = true;
             //LiveThread.Suspend();
-            GoHome();
+            //GoHome();
             //LiveThread.Resume();
             //GiveInfo("Gain controll", ConsoleColor.Magenta);
+        }
+
+        void hideAndLive()
+        {
+            GoHome();
+            Live();
         }
 
         void GoHome()
