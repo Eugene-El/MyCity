@@ -46,6 +46,9 @@ namespace MyCity
                     {
                         City.GetInstance().CityMap.Draw();
                         ImgMap.Source = BitmapToImageSource((Bitmap)City.GetInstance().CityMap.Map.Clone());
+
+                        LblPopulation.Content = "Population: " + City.GetInstance().People.Count;
+                        LblHouses.Content = "Houses count: " + City.GetInstance().Houses.Count;
                     }
                 }));
             }

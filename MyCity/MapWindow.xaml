@@ -5,9 +5,19 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyCity"
         mc:Ignorable="d" 
-        Title="Map" Height="600" Width="600" HorizontalContentAlignment="Right">
+        Title="Map" Height="600" Width="1000" HorizontalContentAlignment="Right">
 
     <Grid>
-        <Image x:Name="ImgMap" HorizontalAlignment="Left"  VerticalAlignment="Top"  Stretch="Fill" Margin="10"/>
+        <Image x:Name="ImgMap" HorizontalAlignment="Left" VerticalAlignment="Top" Width="590" Stretch="Fill" Margin="10"/>
+        <Label x:Name="LblPopulation" Content="Population: " Margin="610,10,288,534"/>
+        <Label x:Name="LblHouses" Content="Houses count: " Margin="610,35,288,509"/>
+        <DataGrid x:Name="PeopleGrid" Margin="610,65,10,10">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Name" HeaderStringFormat="Name"/>
+            </DataGrid.Columns>
+            <!--<DataGridColumnHeader Content="ID"/>
+            <DataGridColumnHeader Content="Name"/>
+            <DataGridColumnHeader Content="Surname"/>-->
+        </DataGrid>
     </Grid>
 </Window>

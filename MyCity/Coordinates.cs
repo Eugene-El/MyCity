@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MyCity
 {
-    class Coordinates
+    public class Coordinates
     {
         public int X { get; set; }
         public int Y { get; set; }
