@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -20,6 +21,8 @@ namespace MyCity
         private Random Rand;
         public CityMap CityMap { get; private set; }
         public Weather WeatherNow { get; private set; }
+
+        public ObservableCollection<Person> PeopleCollection{ get { return new ObservableCollection<Person>(People); } }
 
         public event WeatherDelegate RainEvent;
         public event WeatherDelegate SunEvent;

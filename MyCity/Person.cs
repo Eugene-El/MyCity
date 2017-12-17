@@ -44,7 +44,9 @@ namespace MyCity
         {
             get
             {
-                return City.GetInstance().Houses.Find(h => h.LodgersList.Contains(ID)).Coords;
+                if (HaveHouse)
+                    return City.GetInstance().Houses.Find(h => h.LodgersList.Contains(ID)).Coords;
+                return null;
             }
         }
 
@@ -118,40 +120,41 @@ namespace MyCity
         {
             if (GoToHome)
             {
-                GiveInfo("I use GOtoHOME", ConsoleColor.DarkGray);
+                GiveInfo(this + " use GOtoHOME", ConsoleColor.DarkGray);
                 GoHome();
                 GoToHome = false;
             }
 
-            Thread.Sleep(Rand.Next(10000, 60000)); // From 10 to 60 seconds
-            
-
-            int choose = Rand.Next(100);
-            if (City.GetInstance().WeatherNow != Weather.Rainy)
+            Thread.Sleep(1000); // Every second
+            if (Rand.Next(60) == 0)
             {
-                if (choose < 20)
+                int choose = Rand.Next(100);
+                if (City.GetInstance().WeatherNow != Weather.Rainy)
                 {
-                    BornPerson();
-                }
-                else if (choose < 40)
-                {
-                    BuildHouse();
-                }
-                else if (choose < 60)
-                {
-                    Target = new Coordinates(Rand);
+                    if (choose < 20)
+                    {
+                        BornPerson();
+                    }
+                    else if (choose < 40)
+                    {
+                        BuildHouse();
+                    }
+                    else if (choose < 60)
+                    {
+                        Target = new Coordinates(Rand);
 
-                    GiveInfo(this + " go to " + Target, ConsoleColor.Blue);
-                    Travel();
-                }
-                else if (choose > 95)
-                {
-                    Die();
-                    return;
-                }
-                else
-                {
-                    GoHome();
+                        GiveInfo(this + " go to " + Target, ConsoleColor.Blue);
+                        Travel();
+                    }
+                    else if (choose > 95)
+                    {
+                        Die();
+                        return;
+                    }
+                    else
+                    {
+                        GoHome();
+                    }
                 }
             }
             Live();
@@ -164,9 +167,8 @@ namespace MyCity
             
             if (Coords.Equals(Target))
             {
-                
                 GiveInfo(this + " get target " + Coords, ConsoleColor.Blue);
-                
+                Target = null;
             }
             else
             {
@@ -269,7 +271,7 @@ namespace MyCity
         public void BornPerson()
         {
             Person p = new Person(ChooseName(), Surname, Rand);
-            p.Coords = Coords;
+            p.Coords = new Coordinates(Coords);
             PersonBorn?.Invoke(p, Reason.PersonBorned);
         }
 

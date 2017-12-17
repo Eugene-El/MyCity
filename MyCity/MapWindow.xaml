@@ -5,19 +5,55 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MyCity"
         mc:Ignorable="d" 
-        Title="Map" Height="600" Width="1000" HorizontalContentAlignment="Right">
+        Title="Map" Height="600" Width="1000" HorizontalContentAlignment="Right" Closing="Window_Closing">
 
     <Grid>
-        <Image x:Name="ImgMap" HorizontalAlignment="Left" VerticalAlignment="Top" Width="590" Stretch="Fill" Margin="10"/>
-        <Label x:Name="LblPopulation" Content="Population: " Margin="610,10,288,534"/>
-        <Label x:Name="LblHouses" Content="Houses count: " Margin="610,35,288,509"/>
-        <DataGrid x:Name="PeopleGrid" Margin="610,65,10,10">
-            <DataGrid.Columns>
-                <DataGridTextColumn Binding="{x:Null}" ClipboardContentBinding="{x:Null}" Header="Name" HeaderStringFormat="Name"/>
-            </DataGrid.Columns>
-            <!--<DataGridColumnHeader Content="ID"/>
-            <DataGridColumnHeader Content="Name"/>
-            <DataGridColumnHeader Content="Surname"/>-->
-        </DataGrid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="130"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="6*"/>
+            <ColumnDefinition Width="4*"/>
+        </Grid.ColumnDefinitions>
+
+
+
+        <Image x:Name="ImgMap" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Stretch="Fill" Margin="10"/>
+        <GroupBox Grid.Column="1" Grid.Row="0" Header="Information about city" Margin="0 0 10 0">
+            <DockPanel>
+                <Label x:Name="LblPopulation" Content="Population: " DockPanel.Dock="Top"/>
+                <Label x:Name="LblHouses" Content="Houses count: " DockPanel.Dock="Top"/>
+                <DataGrid x:Name="PeopleGrid" Margin="2"
+                    IsSynchronizedWithCurrentItem="True"
+                    ScrollViewer.CanContentScroll="True" 
+                    ScrollViewer.VerticalScrollBarVisibility="Visible"
+                    ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                    AutoGenerateColumns="False"
+                    DockPanel.Dock="Top" MouseLeftButtonUp="PeopleGrid_MouseLeftButtonUp">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding ID, Mode=OneWay}" Header="ID"/>
+                        <DataGridTextColumn Binding="{Binding FullName, Mode=OneWay}" Header="Full name"/>
+                        <DataGridTextColumn Binding="{Binding Birthday, Mode=OneWay}" Header="Birthday"/>
+                        <DataGridTextColumn Binding="{Binding Coords, Mode=OneWay}" Header="Coordinates"/>
+                        <DataGridCheckBoxColumn Binding="{Binding HaveHouse, Mode=OneWay}" Header="Have house"/>
+                        <DataGridTextColumn Binding="{Binding HouseCoords, Mode=OneWay}" Header="House coordinates"/>
+                        <DataGridTextColumn Binding="{Binding Target, Mode=OneWay}" Header="Target"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </DockPanel>
+        </GroupBox>
+        <GroupBox x:Name="GBaddEdit" Grid.Column="1" Grid.Row="1" Header="Create new / edit erson" Margin="0 0 10 10" Visibility="Hidden">
+            <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Label Content="Name:" HorizontalAlignment="Left" VerticalAlignment="Top" Width="79"/>
+                <Label Content="Surname:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,26,0,0" Width="79"/>
+                <TextBox x:Name="TBname" HorizontalAlignment="Left" Height="23" Margin="84,3,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="281" UndoLimit="20"/>
+                <TextBox x:Name="TBsurname" HorizontalAlignment="Left" Height="23" Margin="84,29,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="281" UndoLimit="20"/>
+                <Button x:Name="BtnCancel" Content="Cancel" HorizontalAlignment="Left" Margin="290,60,0,0" VerticalAlignment="Top" Width="75" Click="BtnCancel_Click"/>
+                <Button x:Name="BtnAccept" Content="Accept" HorizontalAlignment="Left" Margin="210,60,0,0" VerticalAlignment="Top" Width="75" Click="BtnAccept_Click"/>
+
+            </Grid>
+        </GroupBox>
+        <Button x:Name="BtnAddNewPerson" Content="Add new person" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Width="150" Click="BtnAddNewPerson_Click" />
     </Grid>
 </Window>

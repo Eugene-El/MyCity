@@ -13,10 +13,9 @@ namespace MyCity
         [STAThread]
         static void Main(string[] args)
         {
-            City city = City.GetInstance(100, 100, 10);
+            City city = City.GetInstance(100, 100, 30);
             Application map = new Application();
             map.Run(new MapWindow());
-
 
         }
     }

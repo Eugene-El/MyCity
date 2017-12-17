@@ -24,10 +24,14 @@ namespace MyCity
     /// </summary>
     public partial class MapWindow : Window
     {
+        private int currentPersonID;
+
         public MapWindow()
         {
             InitializeComponent();
 
+            PeopleGrid.ItemsSource = City.GetInstance().PeopleCollection;
+            
             Thread t = new Thread(Update);
             t.Start();
         }
@@ -49,6 +53,10 @@ namespace MyCity
 
                         LblPopulation.Content = "Population: " + City.GetInstance().People.Count;
                         LblHouses.Content = "Houses count: " + City.GetInstance().Houses.Count;
+                        
+                        PeopleGrid.ItemsSource = null;
+                        PeopleGrid.ItemsSource = City.GetInstance().PeopleCollection;
+
                     }
                 }));
             }
@@ -71,6 +79,68 @@ namespace MyCity
 
                 return bitmapimage;
             }
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Environment.Exit(0);
+        }
+
+        private void ClearFields()
+        {
+            TBname.Text = TBsurname.Text = "";
+        }
+
+        private void BtnAddNewPerson_Click(object sender, RoutedEventArgs e)
+        {
+            ClearFields();
+            GBaddEdit.Visibility = Visibility.Visible;
+            BtnAddNewPerson.Visibility = Visibility.Hidden;
+            currentPersonID = 0;
+        }
+
+        private void BtnCancel_Click(object sender, RoutedEventArgs e)
+        {
+            ClearFields();
+            GBaddEdit.Visibility = Visibility.Hidden;
+            BtnAddNewPerson.Visibility = Visibility.Visible;
+            currentPersonID = 0;
+        }
+
+        private void BtnAccept_Click(object sender, RoutedEventArgs e)
+        {
+            if (currentPersonID == 0)
+            {
+                Person person = new Person(TBname.Text, TBsurname.Text, new Random());
+                City.GetInstance().AddPerson(person, Reason.PersonArived);
+            }
+            else
+            {
+                Person person = City.GetInstance().People.Find(p => p.ID == currentPersonID);
+                if (person != null)
+                {
+                    person.Name = TBname.Text;
+                    person.Surname = TBsurname.Text;
+                }
+            }
+
+            ClearFields();
+            GBaddEdit.Visibility = Visibility.Hidden;
+            BtnAddNewPerson.Visibility = Visibility.Visible;
+            currentPersonID = 0;
+        }
+
+        private void PeopleGrid_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            Person person = (Person)PeopleGrid.SelectedItem;
+            currentPersonID = person.ID;
+
+            ClearFields();
+            GBaddEdit.Visibility = Visibility.Visible;
+            BtnAddNewPerson.Visibility = Visibility.Hidden;
+
+            TBname.Text = person.Name;
+            TBsurname.Text = person.Surname;
         }
     }
 }

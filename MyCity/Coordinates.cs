@@ -18,12 +18,9 @@ namespace MyCity
         }
 
         public Coordinates() : this(0,0) { }
+        public Coordinates(Coordinates Coords) : this(Coords.X, Coords.Y) { }
+        public Coordinates(Random rand) : this(rand.Next(City.GetInstance().Width), rand.Next(City.GetInstance().Height)) { }
 
-        public Coordinates(Random rand)
-        {
-            X = rand.Next(City.GetInstance().Width);
-            Y = rand.Next(City.GetInstance().Height);
-        }
 
         public override string ToString()
         {
