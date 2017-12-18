@@ -20,8 +20,8 @@ namespace MyCity
         private static string[] surnames = { "Smith", "Holand", "Rufalo", "Alvarez", "Mango", "Cant", "Huff" };
         private Random Rand;
         public int ID { get; }
-        public string Name { get; set; }
-        public string Surname { get; set; }
+        public string Name { get; private set; }
+        public string Surname { get; private set; }
         public string FullName { get { return Name + " " + Surname; } }
         public DateTime Birthday { get; }
         public Coordinates Coords { get; set; }
@@ -113,7 +113,8 @@ namespace MyCity
 
         ~Person()
         {
-            
+            Console.ResetColor();
+            Console.WriteLine("----------------------- " + this + "DESTRUCTURED -----------------------");
         }
 
         void Live()
@@ -164,6 +165,7 @@ namespace MyCity
         {
             Thread.Sleep(500); // One speed for all
 
+            if (Target == null) return;
             
             if (Coords.Equals(Target))
             {
@@ -197,16 +199,9 @@ namespace MyCity
 
         public void HideFromRain()
         {
-            GiveInfo(this + " open umbrella", ConsoleColor.Magenta);
-            //LiveThread.Abort();
-            //LiveThread = new Thread(hideAndLive);
-            //LiveThread.Start();
-            //
-            GoToHome = true;
-            //LiveThread.Suspend();
-            //GoHome();
-            //LiveThread.Resume();
-            //GiveInfo("Gain controll", ConsoleColor.Magenta);
+            //GiveInfo(this + " open umbrella", ConsoleColor.Magenta);
+            //GoToHome = true;
+            new Thread(GoHome).Start();
         }
 
         void hideAndLive()
@@ -258,6 +253,13 @@ namespace MyCity
                 BuildHouse();
         }
 
+        public void ChangeName(string name, string surname)
+        {
+            GiveInfo(this + " changed name to " + name + " " + surname, ConsoleColor.Gray);
+            Name = name;
+            Surname = surname;
+        }
+
         void UnregistrateFromCurrenHouse()
         {
             if (HaveHouse)
@@ -268,14 +270,14 @@ namespace MyCity
             }
         }
 
-        public void BornPerson()
+        void BornPerson()
         {
             Person p = new Person(ChooseName(), Surname, Rand);
             p.Coords = new Coordinates(Coords);
             PersonBorn?.Invoke(p, Reason.PersonBorned);
         }
 
-        public void GiveInfo(string str, ConsoleColor cc)
+        void GiveInfo(string str, ConsoleColor cc)
         {
             PersonInfo?.Invoke(str, cc);
         }

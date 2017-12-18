@@ -118,10 +118,8 @@ namespace MyCity
             {
                 Person person = City.GetInstance().People.Find(p => p.ID == currentPersonID);
                 if (person != null)
-                {
-                    person.Name = TBname.Text;
-                    person.Surname = TBsurname.Text;
-                }
+                    person.ChangeName(TBname.Text, TBsurname.Text);
+
             }
 
             ClearFields();

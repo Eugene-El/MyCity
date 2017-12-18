@@ -59,7 +59,8 @@ namespace MyCity
 
         public static bool CanCreateInCity(House house)
         {
-            foreach (House h in City.GetInstance().Houses)
+            House[] houses = City.GetInstance().Houses.ToArray();
+            foreach (House h in houses)
             {
                 if (h.CheckForIntersection(house))
                     return false;
