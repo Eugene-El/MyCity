@@ -11,7 +11,10 @@ namespace MyCity
     {
         const int SCALE = 5;
 
+        private Bitmap sunnyMap;
+        private Bitmap rainyMap;
         private Bitmap Background;
+
 
         public Bitmap Map { get; private set; }
 
@@ -35,20 +38,27 @@ namespace MyCity
 
         public CityMap()
         {
-            Background = new Bitmap(RealWidth, RealHeight);
+            rainyMap = new Bitmap(RealWidth, RealHeight);
+            sunnyMap = new Bitmap(RealWidth, RealHeight);
+
+            FillBackground(rainyMap, Color.ForestGreen);
+            FillBackground(sunnyMap, Color.LimeGreen);
+
+            MakeSunnyMap();
+
             MakeSunnyMap();
             ClearMap();
         }
 
-        public void FillBackground(Color color)
+        public void FillBackground(Bitmap bitmap, Color color)
         {
             try
             {
                 for (int j = 0; j < RealHeight; j++)
                     for (int i = 0; i < RealWidth; i++)
-                        Background.SetPixel(j, i, color);
+                        bitmap.SetPixel(j, i, color);
             }
-            catch (Exception) { FillBackground(color); }
+            catch (Exception) { FillBackground(bitmap, color); }
         }
 
         private void ClearMap()
@@ -58,12 +68,12 @@ namespace MyCity
 
         public void MakeSunnyMap()
         {
-            FillBackground(Color.LimeGreen);
+            Background = (Bitmap)sunnyMap.Clone();
         }
 
         public void MakeRainnyMap()
         {
-            FillBackground(Color.ForestGreen);
+            Background = (Bitmap)rainyMap.Clone();
         }
 
 
@@ -74,13 +84,6 @@ namespace MyCity
                     Map.SetPixel(x*SCALE+i, y*SCALE+j, color);
         }
 
-        public void SetSircle(int x, int y, Color color)
-        {
-            for (int j = 0; j < SCALE; j++)
-                for (int i = 0; i < SCALE; i++)
-                    if(Math.Pow(x * SCALE+i, 2)+Math.Pow(y*SCALE+j,2) <= Math.Pow(SCALE/2.0,2))
-                        Map.SetPixel(x * SCALE + i, y * SCALE + j, color);
-        }
 
         public void Save()
         {

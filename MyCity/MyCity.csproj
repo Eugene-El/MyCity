@@ -64,7 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="ClassDiagram.cd" />
+    <None Include="MainClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="MapWindow.xaml">

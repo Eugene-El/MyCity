@@ -112,6 +112,7 @@ namespace MyCity
             if (currentPersonID == 0)
             {
                 Person person = new Person(TBname.Text, TBsurname.Text, new Random());
+                person.Coords = Coordinates.GetCoordsOnCityBorder(new Random());
                 City.GetInstance().AddPerson(person, Reason.PersonArived);
             }
             else

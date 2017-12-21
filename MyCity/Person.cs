@@ -30,8 +30,6 @@ namespace MyCity
         {
             get
             {
-                //return City.GetInstance().Houses.All(h => h.LodgersList.Contains(ID));
-
                 bool result = false;
                 for (int i = 0; i < City.GetInstance().Houses.Count; i++)
                     if (City.GetInstance().Houses[i].LodgersList.Contains(ID))
@@ -49,6 +47,8 @@ namespace MyCity
                 return null;
             }
         }
+
+        public bool AtHome { get { return Coords.Equals(HouseCoords); } }
 
         // Targeting
         public Coordinates Target { get; private set; }
@@ -85,24 +85,7 @@ namespace MyCity
             Birthday = DateTime.Now;
             Name = ChooseName();
             Surname = surnames[Rand.Next(surnames.Length)];
-            switch (Rand.Next(4))
-            {
-                case 0:
-                    Coords = new Coordinates(Rand.Next(City.GetInstance().Width), 0);
-                    break;
-
-                case 1:
-                    Coords = new Coordinates(Rand.Next(City.GetInstance().Width), City.GetInstance().Height-1);
-                    break;
-
-                case 2:
-                    Coords = new Coordinates(0, Rand.Next(City.GetInstance().Height));
-                    break;
-
-                case 3:
-                    Coords = new Coordinates(City.GetInstance().Width-1, Rand.Next(City.GetInstance().Height));
-                    break;
-            }
+            Coords = Coordinates.GetCoordsOnCityBorder(Rand);
 
             GoToHome = false;
 
@@ -121,10 +104,12 @@ namespace MyCity
         {
             if (GoToHome)
             {
-                GiveInfo(this + " use GOtoHOME", ConsoleColor.DarkGray);
+                //GiveInfo(this + " use GOtoHOME", ConsoleColor.DarkGray);
                 GoHome();
                 GoToHome = false;
             }
+
+            
 
             Thread.Sleep(1000); // Every second
             if (Rand.Next(60) == 0)
@@ -157,6 +142,11 @@ namespace MyCity
                         GoHome();
                     }
                 }
+                else
+                {
+                    if (!AtHome)
+                        GoHome();
+                }
             }
             Live();
         }
@@ -165,7 +155,7 @@ namespace MyCity
         {
             Thread.Sleep(500); // One speed for all
 
-            if (Target == null) return;
+            //if (Target == null) return;
             
             if (Coords.Equals(Target))
             {
@@ -200,14 +190,8 @@ namespace MyCity
         public void HideFromRain()
         {
             //GiveInfo(this + " open umbrella", ConsoleColor.Magenta);
-            //GoToHome = true;
-            new Thread(GoHome).Start();
-        }
-
-        void hideAndLive()
-        {
-            GoHome();
-            Live();
+            GoToHome = true;
+            //new Thread(GoHome).Start();
         }
 
         void GoHome()

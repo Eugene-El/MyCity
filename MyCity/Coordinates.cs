@@ -31,5 +31,24 @@ namespace MyCity
         {
             return (X == coords.X && Y == coords.Y);
         }
+
+        static public Coordinates GetCoordsOnCityBorder(Random rand)
+        {
+            switch (rand.Next(4))
+            {
+                case 0:
+                    return new Coordinates(rand.Next(City.GetInstance().Width), 0);
+
+                case 1:
+                    return new Coordinates(rand.Next(City.GetInstance().Width), City.GetInstance().Height - 1);
+
+                case 2:
+                    return new Coordinates(0, rand.Next(City.GetInstance().Height));
+
+                case 3:
+                    return new Coordinates(City.GetInstance().Width - 1, rand.Next(City.GetInstance().Height));
+            }
+            return new Coordinates();
+        }
     }
 }
